@@ -1,27 +1,54 @@
-import { User } from '../models/user.js';
+import bcrypt from "bcrypt";
+import User from "../models/user.js";
 
-export async function create(req, res) {
-    try {
-        const { firstname, lastname, email, password } = req.body;
+export async function register(req, res) { //Fonction asynchrone
 
-        // On crée l'utilisateur avec le mot de passe direct, sans bcrypt
-        const newUser = new User({
-            firstname,
-            lastname,
-            email,
-            password: password // Enregistré en texte brut
-        });
-
-        await newUser.save();
-
-        res.status(201).json({
-            message: "Utilisateur créé (sans hachage) !",
-            user: { email: newUser.email }
-        });
-    } catch (err) {
-        res.status(500).json({ 
-            message: "Erreur lors de l'inscription", 
-            error: err.message 
-        });
+  try {
+    const { lastName, firstName, email, password } = req.body;
+    if (!lastName|| !firstName || !email || !password) { // Vérifier que tout est bien rempli sinon message d'erreur
+      res.status()
+      return res.json({ message: "Tous les champs sont requis." });
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.json({ message: "Adresse email invalide." });
+    }
+
+    if (password.length < 8) { // Vérifier que le MDP contient 8 caractères minimum
+
+      return res.json({ message: "Mot de passe trop court (8 caractères minimum)." });
+    }
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() }); // Vérifier que l'utilisateur n'existe pas déjà 
+    if (existingUser) {
+      return res.json({ message: "Email déjà utilisé." });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12); // Code illisible, pour ne pas stocker le MDP en clair
+
+    /** @type {User} user */
+    const user = await User.create({ // Créer utilisateur
+      lastName,
+      firstName,
+      email: email.toLowerCase(),
+      password,
+    });
+
+    return res.json({ // Conditions remplies : Inscription réussie
+      message: "Inscription réussie",
+      user: {
+        id: user._id,
+        lastName: user.lastName,
+        firstName: user.firstName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
+  } catch (error) { // message d'erreur serveur
+    console.error(error);
+    res.status(500);
+    return res.json({ message: "Erreur serveur :( )." });
+  }
 }
