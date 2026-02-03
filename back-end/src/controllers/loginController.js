@@ -1,4 +1,4 @@
-import { User } from '../models/user.js';
+import User from '../models/user.js';
 import jwt from 'jsonwebtoken'; // <--- IMPORTANT : Ajout de l'import pour le Token
 
 class LoginController {
@@ -33,8 +33,8 @@ class LoginController {
                 token: token,
                 user: {
                     id: user._id,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
+                    firstname: user.firstName,
+                    lastname: user.lastName,
                     email: user.email,
                     role: user.role
                 }
