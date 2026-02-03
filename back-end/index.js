@@ -2,9 +2,9 @@ import 'dotenv/config'
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import loginRouter from "back-end\src\routes\loginRouter.js";  
-import salleRouter from "back-end\src\routes\salleRouter.js";   
-import registerRouter from "back-end\src\routes\registerRouteur.js";  
+import loginRouter from "./src/routes/loginRouter.js";  
+import salleRouter from "./src/routes/salleRouter.js";   
+import registerRouter from "./src/routes/registerRouteur.js";  
 mongoose.connect(process.env.DATABASE_URL)
     .then(() => console.log("Connecté à MongoDB avec succès"))
     .catch((err) => console.error("Erreur de connexion MongoDB :", err));

@@ -1,6 +1,5 @@
 import { User } from '../models/user.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'; // <--- IMPORTANT : Ajout de l'import pour le Token
 
 class LoginController {
     
@@ -15,15 +14,17 @@ class LoginController {
                 return res.status(401).json({ message: "Email ou mot de passe incorrect" });
             }
 
-            const isPasswordValid = await bcrypt.compare(login_pass, user.password);
+            // MODIFICATION : Comparaison directe car tu n'utilises plus bcrypt à l'inscription
+            const isPasswordValid = (login_pass === user.password);
             
             if (!isPasswordValid) {
                 return res.status(401).json({ message: "Email ou mot de passe incorrect" });
             }
 
+            // Génération du Token
             const token = jwt.sign(
                 { userId: user._id, role: user.role },
-                process.env.JWT_SECRET,
+                process.env.JWT_SECRET || 'ma_cle_secrete_temporaire', // Valeur de secours si .env vide
                 { expiresIn: '24h' }
             );
 
@@ -40,20 +41,21 @@ class LoginController {
             });
 
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Erreur serveur" });
+            console.error("Erreur Login:", error);
+            res.status(500).json({ message: "Erreur serveur", details: error.message });
         }
     }
 
     static verifyToken(req, res, next) {
-        const token = req.headers.authorization;
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1]; // Plus robuste pour extraire le token
 
         if (!token) {
             return res.status(401).json({ message: "Token manquant" });
         }
 
         try {
-            const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ma_cle_secrete_temporaire');
             req.user = decoded;
             next();
         } catch (error) {
@@ -61,9 +63,8 @@ class LoginController {
         }
     }
 
-    // Vérifier si admin
     static checkAdmin(req, res, next) {
-        if (req.user.role !== 'admin') {
+        if (!req.user || req.user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé. Admin uniquement." });
         }
         next();
