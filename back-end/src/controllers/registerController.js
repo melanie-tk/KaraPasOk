@@ -5,7 +5,7 @@ export async function register(req, res) { //Fonction asynchrone
 
   try {
     const { lastName, firstName, email, password } = req.body;
-    if (!lastName|| !firstName || !email || !password) { // Vérifier que tout est bien rempli sinon message d'erreur
+    if (!lastName || !firstName || !email || !password) { // Vérifier que tout est bien rempli sinon message d'erreur
       res.status()
       return res.json({ message: "Tous les champs sont requis." });
     }
@@ -29,8 +29,8 @@ export async function register(req, res) { //Fonction asynchrone
 
     /** @type {User} user */
     const user = await User.create({ // Créer utilisateur
-      lastName,
-      firstName,
+      lastName: lastName,
+      firstName: firstName,
       email: email.toLowerCase(),
       password: passwordHash,
     });
