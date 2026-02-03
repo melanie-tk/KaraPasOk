@@ -1,43 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="/front-end/css/register.css">
   <title>Inscription</title>
 </head>
-<body>
 
-  <h1>Inscription</h1>
+<body class="signup-page">
+  <div class="container">
+    <h2>Créer un compte</h2>
 
-  <form id="registerForm">
-    <div>
-      <label for="lastname">Nom</label><br>
-      <input type="text" id="lastName" name="lastName" required>
+
+    <form id="registerForm">
+      <input type="text" id="lastName" name="lastName" placeholder="Nom" required>
+      <input type="text" id="firstName" name="firstName" placeholder="Prénom" required>
+      <input type="email" id="email" name="email" placeholder="Email" required>
+
+      <div class="field">
+         <input type="password" id="password" name="password" placeholder="Mot de Passe" required>
+        <button type="button" class="btn-toggle"><img src="/front-end/images/visibility-off.svg" alt="Masquer"></button>
+      </div>
+      <button type="submit" class="btn-add">S'inscrire</button>
+    </form>
+     <p id="message"></p>
+
+    <div class="footer-links" style="text-align:center; margin-top:20px;">
+      <a href="/front-end/src/views/login.html">Déjà un compte ? Connectez-vous</a><br>
+      <a href="/front-end/index.html">Retour à l'accueil</a>
     </div>
-
-    <div>
-      <label for="firstname">Prénom</label><br>
-      <input type="text" id="firstName" name="firstName" required>
-    </div>
-
-    <div>
-      <label for="email">Email</label><br>
-      <input type="email" id="email" name="email" required>
-    </div>
-
-    <div>
-      <label for="password">Mot de passe</label><br>
-      <input type="password" id="password" name="password" required>
-    </div>
-
-    <button type="submit">Créer mon compte</button>
-  </form>
-
-  <p id="message"></p>
-
-  <p>
-    <a href="/front-end/index.html">Retour à l'accueil</a>
-  </p>
-
-<script src="js/main.js"></script>
+  </div>
+  <script src="/front-end/js/login.js"></script>
+  <script src="/front-end/js/main.js"></script>
 </body>
+
 </html>

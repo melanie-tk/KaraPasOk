@@ -1,5 +1,6 @@
 import User from '../models/user.js';
-import jwt from 'jsonwebtoken'; // <--- IMPORTANT : Ajout de l'import pour le Token
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 class LoginController {
     
@@ -14,17 +15,15 @@ class LoginController {
                 return res.status(401).json({ message: "Email ou mot de passe incorrect" });
             }
 
-            // MODIFICATION : Comparaison directe car tu n'utilises plus bcrypt à l'inscription
-            const isPasswordValid = (login_pass === user.password);
+            const isPasswordValid = await bcrypt.compare(login_pass, user.password);
             
             if (!isPasswordValid) {
                 return res.status(401).json({ message: "Email ou mot de passe incorrect" });
             }
 
-            // Génération du Token
             const token = jwt.sign(
                 { userId: user._id, role: user.role },
-                process.env.JWT_SECRET || 'ma_cle_secrete_temporaire', // Valeur de secours si .env vide
+                process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
 
@@ -33,29 +32,29 @@ class LoginController {
                 token: token,
                 user: {
                     id: user._id,
-                    firstname: user.firstName,
-                    lastname: user.lastName,
+                    firstname: user.firstName,  
+                    lastname: user.lastName,    
                     email: user.email,
                     role: user.role
                 }
             });
 
         } catch (error) {
-            console.error("Erreur Login:", error);
-            res.status(500).json({ message: "Erreur serveur", details: error.message });
+            console.error(error);
+            res.status(500).json({ message: "Erreur serveur" });
         }
     }
 
+    // Vérifier le token JWT
     static verifyToken(req, res, next) {
-        const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1]; // Plus robuste pour extraire le token
+        const token = req.headers.authorization;
 
         if (!token) {
             return res.status(401).json({ message: "Token manquant" });
         }
 
         try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'ma_cle_secrete_temporaire');
+            const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET);
             req.user = decoded;
             next();
         } catch (error) {
@@ -63,8 +62,9 @@ class LoginController {
         }
     }
 
+    // Vérifier si admin
     static checkAdmin(req, res, next) {
-        if (!req.user || req.user.role !== 'admin') {
+        if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Accès refusé. Admin uniquement." });
         }
         next();
