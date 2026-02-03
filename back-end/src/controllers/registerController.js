@@ -32,7 +32,7 @@ export async function register(req, res) { //Fonction asynchrone
       lastName,
       firstName,
       email: email.toLowerCase(),
-      password,
+      password: passwordHash,
     });
 
     return res.json({ // Conditions remplies : Inscription réussie
