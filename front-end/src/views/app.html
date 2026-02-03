@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Salles - KaraPasOK</title>
+</head>
+
+<body>
+    <header>
+        <h1>Gérer vos réservations</h1>
+        <p id="user-info"></p>
+        <button id="btn-logout">Déconnexion</button>
+    </header>
+
+    <main>
+        <!-- Formulaire de création de salle (uniquement pour admin) -->
+        <section id="create-section" style="display: none;">
+            <h2>Créer une nouvelle salle</h2>
+            <form id="form-create-salle">
+                <input type="text" id="name" placeholder="Nom de la salle" required>
+                <input type="number" id="capacity" placeholder="Capacité" required>
+                <textarea id="description" placeholder="Description"></textarea>
+                <input type="number" id="pricePerDay" placeholder="Prix par jour" required>
+                <button type="submit">Créer la salle</button>
+            </form>
+        </section>
+
+        <!-- Liste des salles -->
+        <section>
+            <h2>Liste des salles</h2>
+            <div id="salles-list"></div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script src="/front-end/js/app.js"></script>
+</body>
+
+</html>
