@@ -8,7 +8,9 @@ const salleRouter = express.Router();
 salleRouter.get("/salles", SalleController.getAll);
 salleRouter.get("/salles/:id", SalleController.getById);
 
+
 // Routes protégées (CREATE - admin uniquement)
 salleRouter.post("/salles", LoginController.verifyToken, LoginController.checkAdmin, SalleController.create);
-
+salleRouter.put("/salles/:id", LoginController.verifyToken, LoginController.checkAdmin,SalleController.modifyRoom);
+salleRouter.delete("/salles/:id", LoginController.verifyToken, LoginController.checkAdmin, SalleController.deleteRoom);
 export default salleRouter;

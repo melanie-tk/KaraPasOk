@@ -9,16 +9,16 @@
     --primary: #4f46e5;
     --primary-hover: #4338ca;
     --primary-light: rgba(79, 70, 229, 0.1);
-    
+
     /* Couleurs de fond */
     --bg-main: lightgrey;
     --bg-card: #ffffff;
-    
+
     /* Textes */
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --text-muted: #94a3b8;
-    
+
     /* Bordures et ombres */
     --border-color: #e2e8f0;
     --border-radius: 12px;
@@ -26,12 +26,12 @@
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    
+
     /* Couleurs d'action */
     --danger: #ef4444;
     --danger-hover: #dc2626;
     --success: #10b981;
-    
+
     /* Spacing */
     --spacing-xs: 0.5rem;
     --spacing-sm: 0.75rem;
@@ -229,6 +229,29 @@ textarea {
     margin-bottom: var(--spacing-xl);
 }
 
+/* button des salles (modif/supp) */
+.btn-edit {
+
+    background-color: var(--primary);
+    color: white;
+    font-weight: 300;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 5px;
+}
+
+.btn-del {
+
+    background-color: var(--primary);
+    color: white;
+    font-weight: 300;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 5px;
+}
+
 /* Liste des salles en grille */
 #salles-list {
     display: grid;
@@ -237,7 +260,7 @@ textarea {
 }
 
 /* Message "Aucune salle" ou "Chargement" */
-#salles-list > p {
+#salles-list>p {
     grid-column: 1 / -1;
     text-align: center;
     color: var(--text-secondary);
@@ -255,7 +278,7 @@ textarea {
    </div>
 */
 
-#salles-list > div {
+#salles-list>div {
     background-color: var(--bg-card);
     padding: var(--spacing-lg);
     border-radius: var(--border-radius);
@@ -267,7 +290,7 @@ textarea {
 }
 
 /* Barre colorée en haut */
-#salles-list > div::before {
+#salles-list>div::before {
     content: '';
     position: absolute;
     top: 0;
@@ -280,18 +303,18 @@ textarea {
     transition: transform 0.3s ease;
 }
 
-#salles-list > div:hover {
+#salles-list>div:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary);
 }
 
-#salles-list > div:hover::before {
+#salles-list>div:hover::before {
     transform: scaleX(1);
 }
 
 /* Titre de la carte (h3) */
-#salles-list > div h3 {
+#salles-list>div h3 {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--primary);
@@ -299,7 +322,7 @@ textarea {
 }
 
 /* Paragraphes de la carte */
-#salles-list > div p {
+#salles-list>div p {
     color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.6;
@@ -318,32 +341,32 @@ textarea {
     header h1 {
         font-size: 1.25rem;
     }
-    
+
     .user-controls {
         gap: var(--spacing-md);
     }
-    
+
     #user-info {
         display: none;
     }
-    
+
     main {
         padding: var(--spacing-lg) 3%;
     }
-    
+
     #create-section {
         padding: var(--spacing-lg);
     }
-    
+
     #form-create-salle {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
     }
-    
+
     #form-create-salle button[type="submit"] {
         grid-column: span 1;
     }
-    
+
     #salles-list {
         grid-template-columns: 1fr;
         gap: var(--spacing-lg);
@@ -355,32 +378,32 @@ textarea {
     header {
         padding: var(--spacing-sm) 3%;
     }
-    
+
     header h1 {
         font-size: 1.1rem;
     }
-    
+
     #btn-logout {
         padding: var(--spacing-xs) var(--spacing-md);
         font-size: 0.85rem;
     }
-    
+
     main {
         padding: var(--spacing-md) 3%;
     }
-    
+
     #create-section {
         padding: var(--spacing-md);
     }
-    
+
     #create-section h2 {
         font-size: 1.25rem;
     }
-    
+
     .rooms-container h2 {
         font-size: 1.4rem;
     }
-    
+
     #salles-list {
         gap: var(--spacing-md);
     }
@@ -415,4 +438,100 @@ button:disabled {
 /* Centrer du texte */
 .text-center {
     text-align: center;
+}
+
+
+/* MODAL MODIF */
+.none {
+    display: none;
+
+}
+
+/* === MODALE DE MODIFICATION === */
+
+#favDialog {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    background-color: var(--bg-card);
+    animation: modalFadeIn 0.25s ease-out;
+}
+
+/* Fond sombre derrière la modale */
+#favDialog::backdrop {
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* Formulaire dans la modale */
+#favDialog form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xl);
+}
+
+/* Inputs de la modale */
+#favDialog input {
+    background-color: #f8fafc;
+}
+
+/* Focus cohérent avec le reste du site */
+#favDialog input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Groupe de boutons */
+#favDialog form button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+/* Bouton Valider (submit) */
+#favDialog form button[type="submit"] {
+    background-color: var(--primary);
+    color: white;
+    margin-top: var(--spacing-sm);
+}
+
+#favDialog form button[type="submit"]:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+#favDialog form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Bouton Annuler */
+#favDialog form button[type="button"] {
+    background-color: transparent;
+    color: var(--text-secondary);
+}
+
+#favDialog form button[type="button"]:hover {
+    color: var(--danger);
+}
+
+/* Animation d’apparition */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }

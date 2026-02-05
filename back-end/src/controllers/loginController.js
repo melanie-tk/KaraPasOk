@@ -44,7 +44,6 @@ class LoginController {
             res.status(500).json({ message: "Erreur serveur" });
         }
     }
-
     // Vérifier le token JWT
     static verifyToken(req, res, next) {
         const token = req.headers.authorization;
