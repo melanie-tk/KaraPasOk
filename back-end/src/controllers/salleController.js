@@ -1,7 +1,7 @@
 import { Room } from '../models/login.js';
 
 class SalleController {
-    
+
     // CREATE - Créer une salle
     static async create(req, res) {
         try {
@@ -31,7 +31,7 @@ class SalleController {
     static async getAll(req, res) {
         try {
             const rooms = await Room.find();
-            
+
             res.json({
                 message: "Liste des salles",
                 data: rooms
@@ -46,8 +46,8 @@ class SalleController {
     // READ - Récupérer une salle par ID
     static async getById(req, res) {
         try {
-            const room = await Room.findById(req.params.id).populate({path: "reservs", match: { timestampEnd: { $gt: new Date().getTime()}}});
-            console.log(new Date().getTime())
+            const room = await Room.findById(req.params.id);
+
             if (!room) {
                 return res.status(404).json({ message: "Salle non trouvée" });
             }
@@ -62,6 +62,33 @@ class SalleController {
             res.status(500).json({ message: "Erreur lors de la récupération de la salle" });
         }
     }
+    // FONCTION POUR MODIFIER SALLE
+    static async modifyRoom(req, res) {
+        const id = req.params.id
+        const data = req.body
+        try {
+            const room = await Room.updateOne({ _id: id }, data)
+            res.json({ ok: true })
+        } catch (error) {
+            console.error(error);
+            res.json({ ok: false, error: error })
+        }
+    }
+    
+    //essaie de la fct DELETE 
+    static async deleteRoom(req, res) {
+    const id = req.params.id
+    try {
+        const room = await Room.deleteOne({ _id: id })
+        res.json({ ok: true })
+    } catch (error) {
+        console.error(error);
+        res.json({ ok: false, error: error })
+    }
 }
+    
+}
+
+
 
 export default SalleController;
