@@ -46,8 +46,8 @@ class SalleController {
     // READ - Récupérer une salle par ID
     static async getById(req, res) {
         try {
-            const room = await Room.findById(req.params.id);
-
+            const room = await Room.findById(req.params.id).populate({path: "reservs", match: { timestampEnd: { $gt: new Date().getTime()}}});
+            console.log(new Date().getTime())
             if (!room) {
                 return res.status(404).json({ message: "Salle non trouvée" });
             }
