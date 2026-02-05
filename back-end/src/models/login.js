@@ -5,7 +5,8 @@ const roomSchema = new mongoose.Schema(
     name: { type: String, required: true },
     capacity: { type: Number, required: true },
     description: { type: String },
-    pricePerDay: { type: Number, required: true }
+    pricePerDay: { type: Number, required: true },
+    reservs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reserv' }]
   },
   { timestamps: true }
 );

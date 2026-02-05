@@ -5,6 +5,8 @@ import cors from "cors";
 import loginRouter from "./src/routes/loginRouter.js";  
 import salleRouter from "./src/routes/salleRouter.js";   
 import registerRouter from "./src/routes/registerRouter.js";  
+import reservRouter from "./src/routes/reservRouter.js";  
+
 mongoose.connect(process.env.DATABASE_URL)
     .then(() => console.log("Connecté à MongoDB avec succès"))
     .catch((err) => console.error("Erreur de connexion MongoDB :", err));
@@ -16,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api", loginRouter);    
+app.use("/api", reservRouter); 
 app.use("/api", salleRouter);    
 app.use("/api", registerRouter);   
 
