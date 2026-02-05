@@ -62,7 +62,7 @@ class SalleController {
             res.status(500).json({ message: "Erreur lors de la récupération de la salle" });
         }
     }
-    // ESSAIE de faire la fct modify
+    // FONCTION POUR MODIFIER SALLE
     static async modifyRoom(req, res) {
         const id = req.params.id
         const data = req.body

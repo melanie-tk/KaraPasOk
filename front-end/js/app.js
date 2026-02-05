@@ -1,7 +1,5 @@
 
 
-
-
 const API_URL = "http://localhost:3000/api";
 
 // Vérifier si l'utilisateur est connecté
@@ -20,10 +18,12 @@ window.addEventListener('DOMContentLoaded', function () {
     // Afficher le formulaire de création si admin
     if (user.role === 'admin') {
         document.getElementById('create-section').style.display = 'block';
+
     }
 
     // Charger les salles
     loadSalles();
+
 });
 
 // Déconnexion
@@ -77,6 +77,8 @@ document.getElementById('form-create-salle').addEventListener('submit', async fu
 
 // Charger la liste des salles
 async function loadSalles() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user'));
     try {
         const response = await fetch(`${API_URL}/salles`);
         const data = await response.json();
@@ -87,20 +89,30 @@ async function loadSalles() {
         if (data.data && data.data.length > 0) {
             data.data.forEach(salle => {
                 const salleDiv = document.createElement('div');
-                salleDiv.innerHTML = `
+                if (user.role === 'admin') {
+                    salleDiv.innerHTML = `
                     <h3>${salle.name}</h3>
                     <p>Capacité: ${salle.capacity} personnes</p>
                     <p>Prix: ${salle.pricePerDay}€/jour</p>
                     <p>${salle.description || ''}</p>
                     <hr>
                     <button class="btn-edit" data-id="${salle._id}">Modifier</button>
-                    <button class="btn-del" data-id="${salle._id}">Supprimer</button>
-                    
-                `;
-                // la seule maniere de recup salle._id pour des button differents
-                sallesList.appendChild(salleDiv);
-                document.querySelector("button.btn-edit[data-id='" + salle._id + "']").addEventListener("click", showModal);
-                
+                    <button class="btn-del" data-id="${salle._id}">Supprimer</button>`;
+                    sallesList.appendChild(salleDiv);
+                    // la seule maniere de recup salle._id pour des button differents
+                    document.querySelector("button.btn-edit[data-id='" + salle._id + "']").addEventListener("click", showModal);
+                    document.querySelector("button.btn-del[data-id='" + salle._id + "']").addEventListener("click", deleteRoom);
+
+
+                } else {
+                    salleDiv.innerHTML = `
+                    <h3>${salle.name}</h3>
+                    <p>Capacité: ${salle.capacity} personnes</p>
+                    <p>Prix: ${salle.pricePerDay}€/jour</p>
+                    <p>${salle.description || ''}</p>
+                    <hr>`
+                    sallesList.appendChild(salleDiv);
+                }
             });
         } else {
             sallesList.innerHTML = '<p>Aucune salle disponible</p>';
@@ -113,9 +125,7 @@ async function loadSalles() {
 
 //MODIFIER UNE SALLE 
 
-const modifRoom = document.querySelector(".btn-edit");
 const favDialog = document.querySelector("#favDialog");
-
 const newName = document.getElementById("newName");
 const newCapacity = document.getElementById("newCapacity");
 const newDescription = document.getElementById("newDescription");
@@ -123,22 +133,51 @@ const newPrice = document.getElementById("newPrice");
 
 
 async function modifyRoom() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); //OBLIGATOIRE POUR UTILISATION TOKEN
+    const id = favDialog.dataset.id; // RECUP L'ID STOCKER LORS DU CLIC
     try {
-      
+        const response = await fetch(`${API_URL}/salles/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: newName.value,
+                capacity: parseInt(newCapacity.value),
+                description: newDescription.value,
+                pricePerDay: parseFloat(newPrice.value)
+            })
+        });
+        if (response.ok) {
+            alert("Salle modifiée avec succès");
+            favDialog.close();
+            favDialog.classList.add("none");
+            loadSalles();
+        }
+
+
+
     } catch (error) {
         console.error("Erreur:", error);
+        alert("Erreur lors de la modification");
     }
 }
 
+favDialog.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    modifyRoom()
+});
 
-// SUPPRIMER UNE SALLE (MARCHE PO)
-async function deleteRoom() {
+
+//SUPPRIMER UNE SALLE
+async function deleteRoom(e) {
     const token = localStorage.getItem("token");
-    try {
-  
+    const btn = e.target;
+    const id = btn.dataset.id;
 
-        const reponse = await fetch(`${API_URL}/salles/` + btnDel.dataset.id, {
+    try {
+        const reponse = await fetch(`${API_URL}/salles/${id}`, {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
@@ -146,25 +185,54 @@ async function deleteRoom() {
             },
 
         })
-        const btnDel = document.querySelector(".btn-del").addEventListener("click", async () => {
-            console.log("clicker sur del")
-            deleteRoom()
-        });
-    
+        if (reponse.ok) {
+            alert("Salle supprimée avec succès");
+            loadSalles();
+        }
 
-        
+
+
     } catch (error) {
         console.error("Erreur:", error);
+        alert("Erreur lors de la suppression");
     }
 
+
 }
 
+// AFFICHAGE ET MODIF de la MODALE
+
 function showModal(e) {
-    // Query selector pour récupérer le parent contenant toute la modale
-    // Enlève une classe "none" qui fait un display:none
-    // Changer la value de tous les inputs par ceux de l'élément cliqué :
-        // - Soit nouveau fetch avec l'id
-        // - Soit récupération depuis le dom directement
-    // Création du bouton de validation, ajout de l'event listener qui contiendra le fetch final de modif
-    console.log(e.target.dataset.id);
+    const btn = e.target;
+
+    //on recup l'id de la salle a modif
+    const salleId = btn.dataset.id;
+
+    //on recup directement le div parent
+    const salleDiv = btn.parentElement;
+
+    //recupere les infos deja enregistrer et a modif
+    const name = salleDiv.querySelector("h3").textContent;
+    const capacity = salleDiv.querySelectorAll("p")[0].textContent.match(/\d+/)[0];
+    const price = salleDiv.querySelectorAll("p")[1].textContent.match(/\d+/)[0];
+    const description = salleDiv.querySelectorAll("p")[2].textContent;
+
+    //remplace les ancienne valeur par les nouvelle de la modale
+    newName.value = name;
+    newCapacity.value = capacity;
+    newDescription.value = description;
+    newPrice.value = price;
+
+    //recup l'ID sur la modale
+    favDialog.dataset.id = salleId;
+
+    // afficher la modale
+    favDialog.classList.remove("none"); // SUPPRIME LA CLASS NONE A LA MODALE
+    favDialog.showModal();
+
+    //fermeture de la modale et RE-passe la classe de la modale en NONE 
+    favDialog.addEventListener("close", () => {
+        favDialog.classList.add("none");
+    });
 }
+
