@@ -87,6 +87,7 @@ async function loadSalles() {
         sallesList.innerHTML = '';
 
         if (data.data && data.data.length > 0) {
+            console.log("test")
             data.data.forEach(salle => {
                 const salleDiv = document.createElement('div');
                 if (user.role === 'admin') {
@@ -115,10 +116,8 @@ async function loadSalles() {
                     <button type="submit">Réserver</button>
                     </form>
                     <hr>`
-
+                    console.log(salle)
                     sallesList.appendChild(salleDiv);
-                    document.querySelector("button.btn-reserv[data-id='" + salle._id + "']").addEventListener("click", Room);
-
                 }
             });
         } else {

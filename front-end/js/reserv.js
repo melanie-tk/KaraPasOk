@@ -4,38 +4,31 @@ const params = new URLSearchParams(window.location.search);
 const idRoom = params.get("idRoom");
 
 if (idRoom) {
-  document.querySelector("#idRoom").value = idRoom;
+    document.querySelector("#idRoom").value = idRoom;
 }
 
 
 const btn = document.getElementById("verif");
-btn.addEventListener("click", function (event) {
-    checkReserv()
-})
+btn.addEventListener("click", checkReserv)
 
 
+async function checkReserv(e) {
+    e.preventDefault();
+    const dateStart = Date.parse(document.querySelector("#dateStart").value);
+    const dateEnd = Date.parse(document.querySelector("#dateFin").value);
     const id = document.querySelector("#idRoom").value;
-    const dateStart = document.querySelector("#dateStart").value;
-    const dateEnd = document.querySelector("#dateFin").value;
-
-async function checkReserv() {
-    console.log(id)
-    console.log(dateStart)
-    console.log(dateEnd)
     try {
-        console.log("testfetch")
-        const response = await fetch(`${API_URL}/salles/?idRoom=${id}&dateStart=${dateStart}&dateEnd=${dateEnd}`, {
+        const responseFetch = await fetch(`${API_URL}/sendCheckReserv/?idRoom=${id}&dateStart=${dateStart}&dateEnd=${dateEnd}`, {
             method: "GET",
         });
-        console.log(id)
-        console.log(dateStart)
-        console.log(dateEnd)
-        if (response.ok) {
-            console.log("reponse ok")
-            alert("Salle modifiée avec succès");
+        const response = await responseFetch.json();
+
+        if (response.message) {
+            alert("SUCCES");
         }
-
-
+        else if(response.error){
+            alert("Erreur");
+        }
 
     } catch (error) {
         console.error("Erreur:", error);
