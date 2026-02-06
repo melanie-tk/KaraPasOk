@@ -93,6 +93,7 @@ async function loadSalles() {
         sallesList.innerHTML = '';
 
         if (data.data && data.data.length > 0) {
+            console.log("test")
             data.data.forEach(salle => {
                 const salleDiv = document.createElement('div');
                 if (user.role === 'admin') {
@@ -116,7 +117,12 @@ async function loadSalles() {
                     <p>Capacité: ${salle.capacity} personnes</p>
                     <p>Prix: ${salle.pricePerDay}€/jour</p> 
                     <p>${salle.description || ''}</p>
+                    <form action="reserv.html" method="GET">
+                    <input type="hidden" id="idRoom" name="idRoom" value="${salle._id}">
+                    <button type="submit">Réserver</button>
+                    </form>
                     <hr>`
+                    console.log(salle)
                     sallesList.appendChild(salleDiv);
                 }
             });
