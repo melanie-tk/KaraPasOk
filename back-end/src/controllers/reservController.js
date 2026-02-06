@@ -5,7 +5,7 @@ class reservController {
 
     static async createReserv(req, res) {
         try {
-            const { idRoom, dateStart, dateEnd, idUser } = req.body;
+            const { idRoom, dateStart, dateEnd, idUser } = req.query;
             const newReserv = new Reserv({
                 timestampStart: dateStart,
                 timestampEnd: dateEnd,
