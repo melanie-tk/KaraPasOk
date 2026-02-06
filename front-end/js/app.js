@@ -33,6 +33,10 @@ document.getElementById('btn-logout').addEventListener('click', function () {
     window.location.href = 'login.html';
 });
 
+//message sur la view
+const messageDiv = document.getElementById("messageCreate");
+const messageModif = document.getElementById("messageModif");
+
 // Créer une salle
 document.getElementById('form-create-salle').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -62,16 +66,18 @@ document.getElementById('form-create-salle').addEventListener('submit', async fu
         const data = await response.json();
 
         if (response.ok) {
-            alert(data.message);
+            messageDiv.textContent = data.message;
+            messageDiv.style.color = "green";
             document.getElementById('form-create-salle').reset();
             loadSalles();
         } else {
-            alert(data.message);
+            messageDiv.textContent = data.message || "Erreur"
+            messageDiv.style.color = "red";
         }
 
     } catch (error) {
-        console.error("Erreur:", error);
-        alert("Erreur lors de la création de la salle");
+        messageDiv.textContent = "Erreur serveur";
+        messageDiv.style.color = "red";
     }
 });
 
@@ -109,7 +115,7 @@ async function loadSalles() {
                     salleDiv.innerHTML = `
                     <h3>${salle.name}</h3>
                     <p>Capacité: ${salle.capacity} personnes</p>
-                    <p>Prix: ${salle.pricePerDay}€/jour</p>
+                    <p>Prix: ${salle.pricePerDay}€/jour</p> 
                     <p>${salle.description || ''}</p>
                     <form action="reserv.html" method="GET">
                     <input type="hidden" id="idRoom" name="idRoom" value="${salle._id}">
@@ -155,18 +161,20 @@ async function modifyRoom() {
                 pricePerDay: parseFloat(newPrice.value)
             })
         });
+        const data = await response.json();
         if (response.ok) {
-            alert("Salle modifiée avec succès");
             favDialog.close();
             favDialog.classList.add("none");
             loadSalles();
+            messageModif.textContent = data.message;
+            messageModif.style.color = "green";
         }
 
 
 
     } catch (error) {
-        console.error("Erreur:", error);
-        alert("Erreur lors de la modification");
+        messageModif.textContent = data.message;
+        messageModif.style.color = "red";
     }
 }
 
