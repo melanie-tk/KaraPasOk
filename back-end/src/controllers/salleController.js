@@ -16,7 +16,7 @@ class SalleController {
 
             await newRoom.save();
 
-            res.json({
+           return res.json({
                 message: "Salle créée avec succès",
                 data: newRoom
             });
@@ -68,7 +68,7 @@ class SalleController {
         const data = req.body
         try {
             const room = await Room.updateOne({ _id: id }, data)
-            res.json({ ok: true })
+            res.json({ message: "salle modifiée avec succès" })
         } catch (error) {
             console.error(error);
             res.json({ ok: false, error: error })

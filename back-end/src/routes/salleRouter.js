@@ -14,3 +14,4 @@ salleRouter.post("/salles", LoginController.verifyToken, LoginController.checkAd
 salleRouter.put("/salles/:id", LoginController.verifyToken, LoginController.checkAdmin,SalleController.modifyRoom);
 salleRouter.delete("/salles/:id", LoginController.verifyToken, LoginController.checkAdmin, SalleController.deleteRoom);
 export default salleRouter;
+
