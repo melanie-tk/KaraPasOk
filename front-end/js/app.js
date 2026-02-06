@@ -110,8 +110,15 @@ async function loadSalles() {
                     <p>Capacité: ${salle.capacity} personnes</p>
                     <p>Prix: ${salle.pricePerDay}€/jour</p>
                     <p>${salle.description || ''}</p>
+                    <form action="reserv.html" method="GET">
+                    <input type="hidden" id="idRoom" name="idRoom" value="${salle._id}">
+                    <button type="submit">Réserver</button>
+                    </form>
                     <hr>`
+
                     sallesList.appendChild(salleDiv);
+                    document.querySelector("button.btn-reserv[data-id='" + salle._id + "']").addEventListener("click", Room);
+
                 }
             });
         } else {

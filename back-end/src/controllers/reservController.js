@@ -5,11 +5,12 @@ class reservController {
 
        static async createReserv(req, res) {
                try {
+                const { idRoom, dateStart, dateEnd, idUser} = req.body;
                    const newReserv = new Reserv({
-                       timestampStart: 1770159600000,
-                       timestampEnd: 1770301015012,
-                       room: "69849fa3fa0156b91d55d783",
-                       user: "69830e2a59e3a0f8c086c89b"
+                       timestampStart: dateStart,
+                       timestampEnd: dateEnd,
+                       room: idRoom,
+                       user: idUser,
                    });
                     console.log(newReserv)
                    await newReserv.save();
@@ -24,12 +25,22 @@ class reservController {
                    res.status(500).json({ message: "Erreur lors de la création de la réservation" });
                }
            }
-    static async checkReservation(req, res) {
-        const { idRoom, reservDebut, reservFin } = req.body;
 
-        let maReservDebut = Math.floor(new Date(reservDebut).getTime() / 1000);
-        let maReservFin = Math.floor(new Date(reservFin).getTime() / 1000);
-        let timestampActuelle = Math.floor(Date.now() / 1000);
+
+    static async checkReserv(req, res) {
+
+        const { idRoom, dateStart, dateEnd } = req.query;
+        
+  console.log("idRoom :", idRoom);
+  console.log("dateStart :", dateStart);
+  console.log("dateEnd :", dateEnd);
+
+        // const { idRoom, reservDebut, reservFin } = req.body;
+        // let maReservDebut = reservDebut;
+        // let maReservFin = reservFin;
+        // let timestampActuelle = Date.now();
+
+        const reserv = await Reserv.find()
 
         const allReservDebut = [
             1770159600, // 4 février
